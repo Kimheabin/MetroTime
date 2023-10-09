@@ -1,0 +1,17 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.Shebal3" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your light theme here. -->
+        <item name="colorPrimary">#345E86</item> <!-- 액션바-->
+        <item name="colorPrimaryDark">#345E86</item>  <!--상태바-->
+    </style>
+
+    <style name="Theme.Shebal3" parent="Base.Theme.Shebal3" />
+</resources>
+
+
+
+<!-- 원본 액션바 보이게
+"Theme.AppCompat.Light.DarkActionBar"
+안보이게
+"Theme.Material3.DayNight.NoActionBar" -->

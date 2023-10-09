@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/onebottom"
+        app:showAsAction="always"
+        android:enabled="true"
+        android:title="one"/>
+    <item
+        android:id="@+id/twobottom"
+        app:showAsAction="always"
+        android:enabled="true"
+        android:title="two"/>
+    <item
+        android:id="@+id/homebottom"
+        android:enabled="true"
+        android:icon="@drawable/baseline_house_24"
+        android:title="home"
+        app:showAsAction="always"/>
+    <item
+        android:id="@+id/fourbottom"
+        app:showAsAction="always"
+        android:enabled="true"
+        android:title="four">
+    </item>
+    <item
+        android:id="@+id/fivebottom"
+        app:showAsAction="always"
+        android:enabled="true"
+        android:title="five">
+    </item>
+
+
+<!--android:icon=" "-->
+</menu>
