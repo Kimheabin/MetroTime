@@ -1,21 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item
-        android:id="@+id/back"
-        android:title="back"
-        android:icon="@drawable/baseline_keyboard_backspace_24"
-        app:showAsAction="always"
-        android:gravity="right"
-        />
-
-    <item
-        android:id="@+id/toolb"
-        android:title="버튼"
-        app:showAsAction="always"/>
-
-
-
+        <item
+            android:id="@+id/toolb1"
+            app:showAsAction="ifRoom"
+            android:title="버튼1"/>
+        <item
+            android:id="@+id/toolb2"
+            app:showAsAction="ifRoom"
+            android:title="버튼2"/>
 </menu>
-

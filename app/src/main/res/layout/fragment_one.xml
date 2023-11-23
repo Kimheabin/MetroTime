@@ -8,18 +8,22 @@
     android:layout_height="match_parent"
     tools:context=".OneFragment">
 
+    <!--프래그먼트 레이아웃 액자 느낌-->
     <FrameLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></FrameLayout>
+        android:layout_height="match_parent"> </FrameLayout>
+
 
     <TextView
         android:id="@+id/textView1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="안녕 one페이지 입니다."
-        android:textSize="40dp">
+        android:textSize="40dp"
+        android:gravity="center">
     </TextView>
+
 
 
 
