@@ -11,7 +11,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import android.util.Log;
 import android.widget.Toast;
 
-//테스트 테스트 커밋테스트
+//테스트 테스트 커밋 테스트 시바
 public class MainActivity extends AppCompatActivity {
 
 
