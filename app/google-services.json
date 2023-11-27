@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "460081109823",
+    "project_id": "metrotime-aa322",
+    "storage_bucket": "metrotime-aa322.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:460081109823:android:9c13000518078f4745d18a",
+        "android_client_info": {
+          "package_name": "com.example.metrotime"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCsGBRKnfFLVJ6XdPrhvgdacz9UIvPvIBI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
