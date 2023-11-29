@@ -36,6 +36,7 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:32.6.0")) // import firebase bom
     implementation("com.google.firebase:firebase-analytics:21.5.0")
     implementation("com.google.firebase:firebase-messaging:23.3.1") // firebase 관련 라이브러리
+    implementation("com.google.android.gms:play-services-tasks:17.2.1")
 
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.10.0")
