@@ -15,7 +15,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         // Firebase 초기화
         FirebaseApp.initializeApp(this);
-        android.util.Log.i(TAG, "onCreate: 작업 중 테스트");
+        android.util.Log.i(TAG, "onCreate: 작업 중 111");
     }
 
     // Declare the launcher at the top of your Activity/Fragment:
