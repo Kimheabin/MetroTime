@@ -1,0 +1,7 @@
+CREATE TABLE push (
+id bigint(7) not null auto_increment,
+content varchar(767),
+created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+PRIMARY KEY(id),
+unique index (content)
+);
