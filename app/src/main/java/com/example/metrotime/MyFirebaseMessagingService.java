@@ -65,7 +65,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        //Android 8.0 (Oreo) 이상에서만 채널 생성
+        // Android 8.0 (Oreo) 이상에서만 채널 생성
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(channelId, "Notice", NotificationManager.IMPORTANCE_HIGH);
             notificationManager.createNotificationChannel(channel);

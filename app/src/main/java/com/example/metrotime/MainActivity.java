@@ -17,7 +17,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        // Firebase 초기화
+        //Firebase 초기화
         FirebaseApp.initializeApp(this);
 
         getFCMToken();
