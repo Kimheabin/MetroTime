@@ -1,22 +1,19 @@
 package com.example.metrotime;
 
-import android.annotation.SuppressLint;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
-import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -26,58 +23,53 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     @Override
     public void onNewToken(@NonNull String token) {
         super.onNewToken(token);
-        // TODO: Implement this method to send token to your app server.
-        // FCM에 등록 토큰 가져오는 코드
-        FirebaseMessaging.getInstance().getToken()
-                .addOnCompleteListener(new OnCompleteListener<String>() {
-                    @Override
-                    public void onComplete(@NonNull Task<String> task) {
-                        if (task.isSuccessful()) {
-                            // 토큰 얻기 성공
-                            String token = task.getResult();
-                            Log.d("MyFirebaseMsgService", "FCM Token: " + token);
-                        } else {
-                            // 토큰 얻기 실패
-                            Log.w("MyFirebaseMsgService", "Unable to get FCM token", task.getException());
-                        }
-                    }
-                });
-        Log.d(TAG, "Refreshed token: " + token);
+        //토큰을 서버로 전송
     }
+
+    //클라우드 서버에서 메시지를 전송하면 자동으로 호출
+    //이 메서드 안에서 메시지를 처리해 사용자에게 알림을 보낼 수 있다
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
-        //수신된 메세지 처리
+        //FCM을 통해 전달받은 정보에 Notification 정보가 있는 경우 : 알림 생성
+        if (remoteMessage.getNotification() != null) {
+            sendNotification(remoteMessage);
+        } else {
+            Log.d(TAG, "수신 에러: Notification이 비어있습니다.");
+        }
     }
-    private void sendNotification(String messageBody) {
-        //알림 클릭시 실행될 액티비티 (PendingIntent)
+
+    //FCM에서 보낸 정보를 바탕으로 디바이스에 Notification을 생성한다
+    //remoteMessage FCM에서 보낸 데이터 정보들을 저장한다
+    private void sendNotification(RemoteMessage remoteMessage) {
+        int id = 0;
+        String title = remoteMessage.getNotification().getTitle();
+        String body = remoteMessage.getNotification().getBody();
+
+        //알림 채널 설정
         Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
-                PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, id, intent, PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE);
 
-        String channelId = getString(R.string.app_name);
-        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        NotificationCompat.Builder notificationBuilder =
-                new NotificationCompat.Builder(this, channelId)
-                        .setSmallIcon(R.drawable.ic_launcher_background)
-                        .setContentTitle(getString(R.string.app_name))
-                        .setContentText(messageBody)
-                        .setAutoCancel(true)
-                        .setSound(defaultSoundUri)
-                        .setContentIntent(pendingIntent);
+        //채널 생성
+        String channelId = "Metrotime_ChannelID";
+        android.net.Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, channelId)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle(title)
+                .setContentText(body)
+                .setAutoCancel(true)
+                .setSound(soundUri)
+                .setContentIntent(pendingIntent);
 
-        //노티매니저로 알림 팝업 띄우기
-        NotificationManager notificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        // 오레오 버전 이상부터 channelId 값이 필수가 됨
+        //Android 8.0 (Oreo) 이상에서만 채널 생성
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(channelId,
-                    "Channel human readable title",
-                    NotificationManager.IMPORTANCE_DEFAULT);
+            NotificationChannel channel = new NotificationChannel(channelId, "Notice", NotificationManager.IMPORTANCE_HIGH);
             notificationManager.createNotificationChannel(channel);
         }
-        notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
+        notificationManager.notify(id, notificationBuilder.build());
     }
 }
