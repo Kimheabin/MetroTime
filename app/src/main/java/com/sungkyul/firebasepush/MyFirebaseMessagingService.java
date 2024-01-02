@@ -24,7 +24,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private static final String TAG = "MyFirebaseMsgService";
 
-    // [START receive_message]
+    // [START receive_message] : firebaseMessagingService.onMessageReceived 메서드를 제정의하면 수신된 RemoteMessage 객체를 기준으로 작업을 수행하고 메시지 데이터를 가져올 수 있다.
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         // TODO(developer): Handle FCM messages here.
@@ -65,6 +65,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
      * B) User uninstalls/reinstalls the app
      * C) User clears app data
      */
+
+
+    
     @Override
     public void onNewToken(@NonNull String token) {
         Log.d(TAG, "Refreshed token: " + token);

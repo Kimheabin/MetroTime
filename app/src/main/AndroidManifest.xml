@@ -14,6 +14,20 @@
         android:theme="@style/Theme.Firebasepush"
         tools:targetApi="31">
 
+        <!-- [START fcm_default_icon] 알림 모양을 맞춤설정하는 기본값 설정하기. (하면좋음) -->
+        <!-- Set custom default icon. This is used when no icon is set for incoming notification messages. application태그 안에 다음줄을 추가하여 커스텀 기본 아이콘 및 색상을 설정
+             See README(https://goo.gl/l4GJaQ) for more. -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_stat_ic_notification" />
+        <!-- Set color used with incoming notification messages. This is used when no color is set for the incoming
+             notification message. See README(https://goo.gl/6BKBk7) for more. -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/몰라" />
+        <!-- [END fcm_default_icon] -->
+        <!-- [START fcm_default_channel] -->
+
         <!-- [START fcm_disable_auto_init] 토큰 자동 초기화 방지(메타데이터 값을 추가하여 애널리틱스 수집 및 FCM 자동 초기화를 사용중지 해야한다.-->
         <meta-data
             android:name="firebase_messaging_auto_init_enabled"
@@ -32,7 +46,7 @@
             </intent-filter>
         </activity>
 
-        <!-- firebsesMessaging를 확장하는 서비스를 추가(백그라운드에서 앱의 알림을 수신 하는것 외에 다른 방식으로 메시지를 처리하려는 경우에 필요) -->
+        <!-- firebsesMessaging를 확장하는 서비스를 추가 (백그라운드에서 앱의 알림을 수신 하는것 외에 다른 방식으로 메시지를 처리하려는 경우에 필요) -->
         <service
             android:name=".MyFirebaseMessagingService"
             android:exported="false" >

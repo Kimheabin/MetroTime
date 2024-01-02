@@ -26,7 +26,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        askNotificationPermission();
+        logRegToken();
+
     }
+
+
 
     // Declare the launcher at the top of your Activity/Fragment: Android13 이상에서 런타임 알림 권환 요청
     private final ActivityResultLauncher<String> requestPermissionLauncher =
@@ -63,6 +69,23 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     // [END ask_post_notifications]
+
+    private void subscribeTopics() {
+        // [START subscribe_topics] : 클라이언트 앱에서 주제 구독
+        FirebaseMessaging.getInstance().subscribeToTopic("weather")
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        String msg = "Subscribed";
+                        if (!task.isSuccessful()) {
+                            msg = "Subscribe failed";
+                        }
+                        Log.d(TAG, msg);
+                        Toast.makeText(MainActivity.this, msg, Toast.LENGTH_SHORT).show();
+                    }
+                });
+        // [END subscribe_topics]
+    }
 
         private void logRegToken() {
 
