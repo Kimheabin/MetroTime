@@ -6,70 +6,113 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
+import androidx.work.Worker;
+import androidx.work.WorkerParameters;
 
-import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
+
     private static final String TAG = "MyFirebaseMsgService";
+
+    // [START receive_message]
+    @Override
+    public void onMessageReceived(RemoteMessage remoteMessage) {
+        // TODO(developer): Handle FCM messages here.
+        // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
+        Log.d(TAG, "From: " + remoteMessage.getFrom());
+
+        // Check if message contains a data payload.
+        if (remoteMessage.getData().size() > 0) {
+            Log.d(TAG, "Message data payload: " + remoteMessage.getData());
+
+            if (/* Check if data needs to be processed by long running job */ true) {
+                // For long-running tasks (10 seconds or more) use WorkManager.
+                scheduleJob();
+            } else {
+                // Handle message within 10 seconds
+                handleNow();
+            }
+
+        }
+        // Check if message contains a notification payload.
+        if (remoteMessage.getNotification() != null) {
+            Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
+        }
+
+        // Also if you intend on generating your own notifications as a result of a received FCM
+        // message, here is where that should be initiated. See sendNotification method below.
+    }
+    // [END receive_message]
+
+    // [START on_new_token]
     @Override
     public void onNewToken(@NonNull String token) {
-        super.onNewToken(token);
-        //토큰을 서버로 전송
+        Log.d(TAG, "Refreshed token: " + token);
+        sendRegistrationToServer(token); // end
     }
 
-    //클라우드 서버에서 메시지를 전송하면 자동으로 호출
-    //이 메서드 안에서 메시지를 처리해 사용자에게 알림을 보낼 수 있다
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    @Override
-    public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
-        super.onMessageReceived(remoteMessage);
-        //FCM을 통해 전달받은 정보에 Notification 정보가 있는 경우 : 알림 생성
-        if (remoteMessage.getNotification() != null) {
-            sendNotification(remoteMessage);
-        } else {
-            Log.d(TAG, "수신 에러: Notification이 비어있습니다.");
-        }
+    private void scheduleJob() {
+        OneTimeWorkRequest work = new OneTimeWorkRequest.Builder(MyWorker.class).build(); //start
+        WorkManager.getInstance(this).beginWith(work).enqueue();                  //end
     }
 
-    //FCM에서 보낸 정보를 바탕으로 디바이스에 Notification을 생성한다
-    //remoteMessage FCM에서 보낸 데이터 정보들을 저장한다
-    private void sendNotification(RemoteMessage remoteMessage) {
-        int id = 0;
-        String title = remoteMessage.getNotification().getTitle();
-        String body = remoteMessage.getNotification().getBody();
+    private void handleNow() {
+        Log.d(TAG, "Short lived task is done.");
+    }
 
-        //알림 채널 설정
+    private void sendRegistrationToServer(String token) {
+        // TODO: Implement this method to send token to your app server.
+    }
+
+    private void sendNotification(String messageBody) {
         Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, id, intent, PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
+                PendingIntent.FLAG_IMMUTABLE);
 
-        //채널 생성
-        String channelId = "Metrotime_ChannelID";
-        android.net.Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, channelId)
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle(title)
-                .setContentText(body)
-                .setAutoCancel(true)
-                .setSound(soundUri)
-                .setContentIntent(pendingIntent);
+        String channelId = "MetroTime_Channel";
+        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        NotificationCompat.Builder notificationBuilder =
+                new NotificationCompat.Builder(this, channelId)
+                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setContentTitle("FCM Message")
+                        .setContentText(messageBody)
+                        .setAutoCancel(true)
+                        .setSound(defaultSoundUri)
+                        .setContentIntent(pendingIntent);
 
-        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager notificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        // Android 8.0 (Oreo) 이상에서만 채널 생성
+        // Oreo 버전부터 채널 필요
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(channelId, "Notice", NotificationManager.IMPORTANCE_HIGH);
+            NotificationChannel channel = new NotificationChannel(channelId,
+                    "MetroTime Notification Channel",
+                    NotificationManager.IMPORTANCE_DEFAULT);
             notificationManager.createNotificationChannel(channel);
         }
-        notificationManager.notify(id, notificationBuilder.build());
+        notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
+    }
+
+    public static class MyWorker extends Worker {
+        public MyWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
+            super(context, workerParams);
+        }
+        @NonNull
+        @Override
+        public Result doWork() {
+            // TODO(developer): add long running task here.
+            return Result.success();
+        }
     }
 }
